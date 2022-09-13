@@ -1,12 +1,13 @@
-from calendar import c
+from fastapi import Depends
 from passlib.context import CryptContext
 
+from .dependencies import get_crypt_context
 from .i_password_handler import IPasswordHandler
 
 
 class PasswordHandler(IPasswordHandler):
-    def __init__(self):
-        self.__context = CryptContext(schemes=['bcrypt'], deprecated=["auto"])
+    def __init__(self, crypt_context: CryptContext = Depends(get_crypt_context)):
+        self.__context = crypt_context
 
     def verify_password(self, plain_password: str, hashed_password: str) -> bool:
         return self.__context.verify(plain_password, hashed_password)
