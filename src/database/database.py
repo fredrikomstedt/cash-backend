@@ -1,5 +1,5 @@
+from common.settings import Settings
 from injector import inject
-from settings import Settings
 from sqlmodel import Session, SQLModel, create_engine
 
 from .i_database import IDatabase
