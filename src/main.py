@@ -1,9 +1,7 @@
 from fastapi import FastAPI
-from fastapi_injector import Injected, InjectorMiddleware, attach_injector
+from fastapi_injector import InjectorMiddleware, attach_injector
 
 from database.i_database import IDatabase
-from database.users.i_user_manager import IUserManager
-from database.users.user import UserCreate, UserRead
 from dependencies import injector_instance
 
 app = FastAPI(title='Cash')

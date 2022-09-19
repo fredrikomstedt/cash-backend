@@ -15,14 +15,14 @@ class IUserManager(ABC):
            Returns the newly created user."""
 
     @abstractmethod
-    def get_user(self, id: UUID) -> User:
-        """Fetches a user with the given ID. Raises an 
-           exception if the user does not exist."""
+    def get_user(self, id: UUID) -> User | None:
+        """Fetches a user with the given ID. Returns None
+           if the user does not exist."""
 
     @abstractmethod
-    def get_user_with_email(self, email: EmailStr) -> User:
-        """Fetches a user with the given email. Raises an 
-           exception if the user does not exist."""
+    def get_user_with_email(self, email: EmailStr) -> User | None:
+        """Fetches a user with the given email. Returns None
+           if the user does not exist."""
 
     @abstractmethod
     def update_user(self, id: UUID, user: UserUpdate) -> User:
