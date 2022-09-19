@@ -1,21 +1,21 @@
-from global_dependencies import get_settings
+from injector import inject
+from settings import Settings
 from sqlmodel import Session, SQLModel, create_engine
 
-connect_args = {"check_same_thread": False}
-engine = create_engine(
-    get_settings().database_url,
-    connect_args=connect_args
-)
+from .i_database import IDatabase
 
 
-def get_engine():
-    return engine
+class Database(IDatabase):
+    @inject
+    def __init__(self, settings: Settings):
+        connect_args = {"check_same_thread": False}
+        self.__engine = create_engine(
+            settings.database_url,
+            connect_args=connect_args
+        )
 
+    def create_database(self) -> None:
+        SQLModel.metadata.create_all(self.__engine)
 
-def create_database():
-    SQLModel.metadata.create_all(engine)
-
-
-def get_database_session():
-    with Session(engine) as session:
-        yield session
+    def get_session(self) -> Session:
+        return Session(self.__engine)

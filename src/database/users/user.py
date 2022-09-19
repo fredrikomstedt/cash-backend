@@ -5,14 +5,14 @@ from sqlmodel import Field, SQLModel
 
 
 class UserBase(SQLModel):
-    first_name: str
-    last_name: str
+    first_name: str | None = None
+    last_name: str | None = None
     email: EmailStr
-    is_verified: bool = False
 
 
 class UserRead(UserBase):
     id: uuid.UUID
+    is_verified: bool
 
 
 class UserCreate(UserBase, extra=Extra.forbid):
@@ -21,6 +21,7 @@ class UserCreate(UserBase, extra=Extra.forbid):
 
 class UserUpdate(UserBase):
     password: str | None = None
+    is_verified: bool | None = None
 
 
 class User(UserBase, table=True):
@@ -31,3 +32,4 @@ class User(UserBase, table=True):
         nullable=False,
     )
     hashed_password: str | None = None
+    is_verified: bool = False

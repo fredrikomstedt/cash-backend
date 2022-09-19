@@ -1,14 +1,16 @@
-class Authentication:
-    def create_user(self, username: str, password: str) -> None:
-        """Creates a user with the supplied username and password,
-           assuming no user with that username already exists."""
+from database.users.user import User
+from fastapi_injector import Injected
+
+from .i_authentication import IAuthentication
+from .i_password_handler import IPasswordHandler
+
+
+class Authentication(IAuthentication):
+    def __init__(self, password_handler: IPasswordHandler = Injected(IPasswordHandler)):
+        self.__password_handler = password_handler
 
     def login_user(self, username: str, password: str) -> str:
-        """Logs in a user with the supplied username and password,
-           assuming the user exists and is verified.
+        pass
 
-           Returns a token for authenticated requests."""
-
-    def authenticate_user(self, token: str):  # -> User
-        """Authenticates the supplied token and returns
-           the user associated with it."""
+    def authenticate_user(self, token: str) -> User:
+        pass
