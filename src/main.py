@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from dependencies import create_database
+from database.database import create_database
 
 app = FastAPI(title='Cash')
 

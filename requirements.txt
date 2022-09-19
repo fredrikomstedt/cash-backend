@@ -1,6 +1,8 @@
 fastapi
 uvicorn[standard]
 autopep8
+isort
 python-jose[cryptography]
 passlib[bcrypt]
 sqlmodel
+email-validator

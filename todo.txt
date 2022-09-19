@@ -1,4 +1,0 @@
-Move Database handling to database/database.py
-Rename dependencies.py to global_dependencies.py
-Import database.py in main instead of through dependencies
-Use database.py as dependency for the various model classes we generate
