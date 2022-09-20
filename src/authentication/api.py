@@ -1,9 +1,15 @@
+from uuid import UUID
+
 from database.users.i_user_manager import IUserManager
-from database.users.user import UserCreate, UserRead
+from database.users.user import (User, UserCreate, UserRead, UserUpdate,
+                                 UserUpdatePassword)
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi_injector import Injected
 
+from authentication.i_password_handler import IPasswordHandler
+
+from .current_user import get_current_user
 from .i_authentication import IAuthentication
 from .token import Token
 
@@ -46,4 +52,84 @@ def create_user(user: UserCreate, user_manager: IUserManager = Injected(IUserMan
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="User with that email already exists.",
+        )
+
+
+@router.patch(
+    "/update-user",
+    response_model=UserRead,
+    responses={
+        status.HTTP_404_NOT_FOUND: {
+            "description": "User does not exist."
+        }
+    }
+)
+def update_user(
+    user: UserUpdate,
+    user_manager: IUserManager = Injected(IUserManager),
+    current_user: User = Depends(get_current_user)
+):
+    try:
+        updated_user = user_manager.update_user(current_user.id, user)
+        return updated_user
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User does not exist.",
+        )
+
+
+@router.patch(
+    "/update-user-password",
+    response_model=UserRead,
+    responses={
+        status.HTTP_400_BAD_REQUEST: {
+            "description": "Old password is incorrect."
+        },
+        status.HTTP_404_NOT_FOUND: {
+            "description": "User does not exist."
+        }
+    }
+)
+def update_user_password(
+    passwords: UserUpdatePassword,
+    password_handler: IPasswordHandler = Injected(IPasswordHandler),
+    user_manager: IUserManager = Injected(IUserManager),
+    current_user: User = Depends(get_current_user)
+):
+    if not password_handler.verify_password(passwords.old_password, current_user.hashed_password):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Old password is incorrect.",
+        )
+    try:
+        updated_user = user_manager.update_user_password(
+            current_user.id, passwords.new_password)
+        return updated_user
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User does not exist.",
+        )
+
+
+@router.delete(
+    "/delete-user",
+    status_code=status.HTTP_204_NO_CONTENT,
+    responses={
+        status.HTTP_400_BAD_REQUEST: {
+            "description": "User does not exist."
+        }
+    }
+)
+def delete_user(
+    user_manager: IUserManager = Injected(IUserManager),
+    current_user: User = Depends(get_current_user)
+):
+    try:
+        user_manager.delete_user(current_user.id)
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="User does not exist.",
         )

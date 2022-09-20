@@ -39,8 +39,6 @@ class Authentication(IAuthentication):
         user = self.__user_manager.get_user_with_email(email)
         if user is None:
             raise ValueError("User does not exist.")
-        if not user.is_verified:
-            raise ValueError("User is not verified.")
         return user
 
     def __validate_email_and_password(self, email: str, password: str) -> User:

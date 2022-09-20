@@ -30,6 +30,11 @@ class IUserManager(ABC):
            Raises an exception if the user does not exist."""
 
     @abstractmethod
+    def update_user_password(self, id: UUID, password: str) -> User:
+        """Updates the password of the user with the given ID.
+           Raises an exception if the user does not exist."""
+
+    @abstractmethod
     def delete_user(self, id: UUID) -> None:
         """Deletes the user with the given ID. Raises if the user
            does not exist."""

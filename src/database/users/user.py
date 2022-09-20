@@ -12,16 +12,20 @@ class UserBase(SQLModel):
 
 class UserRead(UserBase):
     id: uuid.UUID
-    is_verified: bool
 
 
 class UserCreate(UserBase, extra=Extra.forbid):
     password: str
 
 
-class UserUpdate(UserBase):
-    password: str | None = None
-    is_verified: bool | None = None
+class UserUpdate(SQLModel):
+    first_name: str | None = None
+    last_name: str | None = None
+
+
+class UserUpdatePassword(SQLModel):
+    old_password: str
+    new_password: str
 
 
 class User(UserBase, table=True):
@@ -32,4 +36,3 @@ class User(UserBase, table=True):
         nullable=False,
     )
     hashed_password: str | None = None
-    is_verified: bool = False
