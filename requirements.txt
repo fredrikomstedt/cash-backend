@@ -7,3 +7,4 @@ passlib[bcrypt]
 sqlmodel
 email-validator
 fastapi-injector
+python-multipart

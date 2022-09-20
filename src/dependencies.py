@@ -2,6 +2,8 @@ from fastapi_injector import request_scope
 from injector import Injector, singleton
 from passlib.context import CryptContext
 
+from authentication.authentication import Authentication
+from authentication.i_authentication import IAuthentication
 from authentication.i_password_handler import IPasswordHandler
 from authentication.password_handler import PasswordHandler
 from common.i_jwt_encoder import IJwtEncoder
@@ -21,5 +23,7 @@ injector_instance.binder.bind(CryptContext, to=CryptContext(
 injector_instance.binder.bind(IDatabase, Database, scope=singleton)
 injector_instance.binder.bind(
     IPasswordHandler, to=PasswordHandler, scope=singleton)
+injector_instance.binder.bind(
+    IAuthentication, to=Authentication, scope=singleton)
 injector_instance.binder.bind(
     IUserManager, to=UserManager, scope=request_scope)

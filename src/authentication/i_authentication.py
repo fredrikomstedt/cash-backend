@@ -5,8 +5,8 @@ from database.users.user import User
 
 class IAuthentication(ABC):
     @abstractmethod
-    def login_user(self, username: str, password: str) -> str:
-        """Logs in a user with the supplied username and password,
+    def login_user(self, email: str, password: str) -> str:
+        """Logs in a user with the supplied email and password,
            assuming the user exists and is verified.
 
            Returns a token for authenticated requests."""
