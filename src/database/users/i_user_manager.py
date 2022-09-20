@@ -28,3 +28,8 @@ class IUserManager(ABC):
     def update_user(self, id: UUID, user: UserUpdate) -> User:
         """Updates the user with the provided user values.
            Raises an exception if the user does not exist."""
+
+    @abstractmethod
+    def delete_user(self, id: UUID) -> None:
+        """Deletes the user with the given ID. Raises if the user
+           does not exist."""

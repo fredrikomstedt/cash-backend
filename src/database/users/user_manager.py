@@ -54,3 +54,12 @@ class UserManager(IUserManager):
             session.commit()
             session.refresh(db_user)
             return db_user
+
+    def delete_user(self, id: UUID) -> None:
+        with self.__database.get_session() as session:
+            db_user = session.get(User, id)
+            if not db_user:
+                raise ValueError("No user with that ID exists.")
+
+            session.delete(db_user)
+            session.commit()
