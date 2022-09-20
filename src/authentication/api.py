@@ -1,7 +1,7 @@
 from database.users.i_user_manager import IUserManager
 from database.users.user import UserCreate, UserRead
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordRequestForm
 from fastapi_injector import Injected
 
 from .i_authentication import IAuthentication
