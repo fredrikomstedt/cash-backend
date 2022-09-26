@@ -24,11 +24,8 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Enter directory
-        run: cd src
-
       - name: Run the tests
-        run: python -m coverage run -m unittest discover
+        run: cd src && python -m coverage run -m unittest discover
 
       - name: Generate coverage report
         run: python -m coverage html
