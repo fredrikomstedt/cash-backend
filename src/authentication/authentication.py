@@ -1,6 +1,7 @@
 from base64 import encode
 from datetime import datetime, timedelta
 
+from common.exceptions import ObjectNotFoundError
 from common.i_jwt_encoder import IJwtEncoder
 from common.settings import Settings
 from database.users.i_user_manager import IUserManager
@@ -38,13 +39,13 @@ class Authentication(IAuthentication):
             raise ValueError("Token contains no user information.")
         user = self.__user_manager.get_user_with_email(email)
         if user is None:
-            raise ValueError("User does not exist.")
+            raise ObjectNotFoundError("User does not exist.")
         return user
 
     def __validate_email_and_password(self, email: str, password: str) -> User:
         user = self.__user_manager.get_user_with_email(email)
         if user is None:
-            raise ValueError("User does not exist.")
+            raise ObjectNotFoundError("User does not exist.")
         if not self.__password_handler.verify_password(password, user.hashed_password):
             raise ValueError("Incorrect password.")
         return user

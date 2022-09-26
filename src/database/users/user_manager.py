@@ -1,6 +1,7 @@
 from uuid import UUID
 
 from authentication.i_password_handler import IPasswordHandler
+from common.exceptions import ObjectNotFoundError
 from database.i_database import IDatabase
 from database.users.user import User, UserCreate, UserUpdate
 from injector import inject
@@ -46,7 +47,7 @@ class UserManager(IUserManager):
         with self.__database.get_session() as session:
             db_user = self.__get_user_by_external_id(id, session)
             if not db_user:
-                raise ValueError("No user with that ID exists.")
+                raise ObjectNotFoundError("No user with that ID exists.")
             user_data = user.dict(exclude_unset=True)
             for key, value in user_data.items():
                 setattr(db_user, key, value)
@@ -59,7 +60,7 @@ class UserManager(IUserManager):
         with self.__database.get_session() as session:
             db_user = self.__get_user_by_external_id(id, session)
             if not db_user:
-                raise ValueError("No user with that ID exists.")
+                raise ObjectNotFoundError("No user with that ID exists.")
             hashed_password = self.__password_handler.hash_password(password)
             db_user.hashed_password = hashed_password
             session.add(db_user)
@@ -71,7 +72,7 @@ class UserManager(IUserManager):
         with self.__database.get_session() as session:
             db_user = self.__get_user_by_external_id(id, session)
             if not db_user:
-                raise ValueError("No user with that ID exists.")
+                raise ObjectNotFoundError("No user with that ID exists.")
 
             session.delete(db_user)
             session.commit()
