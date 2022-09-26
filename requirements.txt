@@ -8,3 +8,4 @@ sqlmodel
 email-validator
 fastapi-injector
 python-multipart
+coverage
