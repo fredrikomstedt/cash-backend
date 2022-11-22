@@ -1,14 +1,14 @@
 from uuid import UUID
 
-from common.exceptions import ObjectNotFoundError
-from database.users.i_user_manager import IUserManager
-from database.users.user import (User, UserCreate, UserRead, UserUpdate,
-                                 UserUpdatePassword)
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi_injector import Injected
 
 from authentication.i_password_handler import IPasswordHandler
+from common.exceptions import ObjectNotFoundError
+from database.users.i_user_manager import IUserManager
+from database.users.user import (User, UserCreate, UserRead, UserUpdate,
+                                 UserUpdatePassword)
 
 from .current_user import get_current_user
 from .i_authentication import IAuthentication
@@ -114,11 +114,27 @@ def update_user_password(
         )
 
 
+@router.get(
+    "/get-user",
+    status_code=status.HTTP_200_OK,
+    response_model=UserRead,
+    responses={
+        status.HTTP_404_NOT_FOUND: {
+            "description": "User does not exist."
+        }
+    }
+)
+def get_user(
+    current_user: User = Depends(get_current_user)
+):
+    return current_user
+
+
 @router.delete(
     "/delete-user",
     status_code=status.HTTP_204_NO_CONTENT,
     responses={
-        status.HTTP_400_BAD_REQUEST: {
+        status.HTTP_404_NOT_FOUND: {
             "description": "User does not exist."
         }
     }
@@ -131,6 +147,6 @@ def delete_user(
         user_manager.delete_user(current_user.id)
     except ObjectNotFoundError as exc:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail="User does not exist.",
         )

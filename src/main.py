@@ -5,7 +5,7 @@ from authentication.api import router as auth_router
 from database.i_database import IDatabase
 from dependencies import injector_instance
 
-app = FastAPI(title='Cash')
+app = FastAPI(title='User Service')
 app.add_middleware(InjectorMiddleware, injector=injector_instance)
 attach_injector(app, injector_instance)
 
