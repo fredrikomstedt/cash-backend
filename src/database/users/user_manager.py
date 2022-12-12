@@ -1,14 +1,14 @@
 from uuid import UUID
 
-from authentication.i_password_handler import IPasswordHandler
-from common.exceptions import ObjectNotFoundError
-from database.i_database import IDatabase
-from database.users.user import User, UserCreate, UserUpdate
 from injector import inject
 from pydantic import EmailStr
 from sqlmodel import Session, select
 
-from .i_user_manager import IUserManager
+from src.authentication.i_password_handler import IPasswordHandler
+from src.common.exceptions import ObjectNotFoundError
+from src.database.i_database import IDatabase
+from src.database.users.i_user_manager import IUserManager
+from src.database.users.user import User, UserCreate, UserUpdate
 
 
 class UserManager(IUserManager):

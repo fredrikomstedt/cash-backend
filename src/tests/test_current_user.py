@@ -1,11 +1,12 @@
 from unittest import TestCase
 from unittest.mock import create_autospec
 
+from fastapi import HTTPException
+
 from authentication.current_user import get_current_user
 from authentication.i_authentication import IAuthentication
-from common.exceptions import ObjectNotFoundError
-from database.users.user import User
-from fastapi import HTTPException
+from src.common.exceptions import ObjectNotFoundError
+from src.database.users.user import User
 
 
 class TestCurrentUser(TestCase):

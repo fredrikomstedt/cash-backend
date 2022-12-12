@@ -4,15 +4,14 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi_injector import Injected
 
-from authentication.i_password_handler import IPasswordHandler
-from common.exceptions import ObjectNotFoundError
-from database.users.i_user_manager import IUserManager
-from database.users.user import (User, UserCreate, UserRead, UserUpdate,
-                                 UserUpdatePassword)
-
-from .current_user import get_current_user
-from .i_authentication import IAuthentication
-from .token import Token
+from src.authentication.current_user import get_current_user
+from src.authentication.i_authentication import IAuthentication
+from src.authentication.i_password_handler import IPasswordHandler
+from src.authentication.token import Token
+from src.common.exceptions import ObjectNotFoundError
+from src.database.users.i_user_manager import IUserManager
+from src.database.users.user import (User, UserCreate, UserRead, UserUpdate,
+                                     UserUpdatePassword)
 
 router = APIRouter(prefix="/auth",
                    tags=["Authentication"],)

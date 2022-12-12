@@ -1,7 +1,7 @@
 from injector import inject
 from passlib.context import CryptContext
 
-from .i_password_handler import IPasswordHandler
+from src.authentication.i_password_handler import IPasswordHandler
 
 
 class PasswordHandler(IPasswordHandler):

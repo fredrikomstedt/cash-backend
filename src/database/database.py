@@ -1,8 +1,8 @@
-from common.settings import Settings
 from injector import inject
 from sqlmodel import Session, SQLModel, create_engine
 
-from .i_database import IDatabase
+from src.common.settings import Settings
+from src.database.i_database import IDatabase
 
 
 class Database(IDatabase):

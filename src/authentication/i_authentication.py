@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from database.users.user import User
+from src.database.users.user import User
 
 
 class IAuthentication(ABC):

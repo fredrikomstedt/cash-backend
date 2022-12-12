@@ -3,7 +3,7 @@ from uuid import UUID
 
 from pydantic import EmailStr
 
-from .user import User, UserCreate, UserUpdate
+from src.database.users.user import User, UserCreate, UserUpdate
 
 
 class IUserManager(ABC):

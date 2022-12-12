@@ -2,9 +2,8 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from fastapi_injector import Injected
 
-from common.exceptions import ObjectNotFoundError
-
-from .i_authentication import IAuthentication
+from src.authentication.i_authentication import IAuthentication
+from src.common.exceptions import ObjectNotFoundError
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
 

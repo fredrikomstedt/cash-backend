@@ -1,9 +1,8 @@
 from injector import inject
 from jose import jwt
 
-from common.settings import Settings
-
-from .i_jwt_encoder import IJwtEncoder
+from src.common.i_jwt_encoder import IJwtEncoder
+from src.common.settings import Settings
 
 
 class JwtEncoder(IJwtEncoder):

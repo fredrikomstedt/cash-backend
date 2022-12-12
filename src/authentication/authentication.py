@@ -1,16 +1,16 @@
 from base64 import encode
 from datetime import datetime, timedelta
 
-from common.exceptions import ObjectNotFoundError
-from common.i_jwt_encoder import IJwtEncoder
-from common.settings import Settings
-from database.users.i_user_manager import IUserManager
-from database.users.user import User
 from injector import inject
 from pydantic import EmailStr
 
-from .i_authentication import IAuthentication
-from .i_password_handler import IPasswordHandler
+from src.authentication.i_authentication import IAuthentication
+from src.authentication.i_password_handler import IPasswordHandler
+from src.common.exceptions import ObjectNotFoundError
+from src.common.i_jwt_encoder import IJwtEncoder
+from src.common.settings import Settings
+from src.database.users.i_user_manager import IUserManager
+from src.database.users.user import User
 
 
 class Authentication(IAuthentication):
