@@ -30,7 +30,6 @@ jobs:
 
       - name: Generate coverage report
         run: |
-          cd src
           python -m coverage html
 
       - name: Upload coverage to Codecov
