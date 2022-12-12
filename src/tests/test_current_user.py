@@ -3,8 +3,8 @@ from unittest.mock import create_autospec
 
 from fastapi import HTTPException
 
-from authentication.current_user import get_current_user
-from authentication.i_authentication import IAuthentication
+from src.authentication.current_user import get_current_user
+from src.authentication.i_authentication import IAuthentication
 from src.common.exceptions import ObjectNotFoundError
 from src.database.users.user import User
 
