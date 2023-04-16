@@ -1,6 +1,6 @@
 from fastapi_injector import request_scope
 from src.database.i_database_deleter import IDatabaseDeleter
-from src.injector import MultiInjector
+from src.multi_injector import MultiInjector
 from injector import singleton
 from passlib.context import CryptContext
 
