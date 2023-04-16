@@ -4,7 +4,6 @@ from unittest.mock import create_autospec
 from fastapi import status
 from fastapi.testclient import TestClient
 from injector import Injector, singleton
-from jose import ExpiredSignatureError
 
 from src.authentication.i_authentication import IAuthentication
 from src.authentication.i_password_handler import IPasswordHandler

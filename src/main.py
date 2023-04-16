@@ -7,7 +7,7 @@ from src.dependencies import injector_instance
 
 
 def create_app(injector: Injector):
-    created_app = FastAPI(title='User Service')
+    created_app = FastAPI(title="Cash Backend")
     created_app.add_middleware(InjectorMiddleware, injector=injector)
     attach_injector(created_app, injector)
     created_app.include_router(auth_router)
