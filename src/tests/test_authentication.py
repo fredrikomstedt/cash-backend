@@ -56,3 +56,37 @@ class TestAuthentication(TestCase):
         self.__user_manager.get_user_with_email.assert_called_once_with(
             test_email)
         self.assertEqual(returned_user, user)
+
+    def test_login_user_raises_on_user_not_existing(self):
+        self.__user_manager.get_user_with_email.return_value = None
+
+        authentication = self.__injector.get(Authentication)
+
+        with self.assertRaises(ObjectNotFoundError):
+            authentication.login_user("test@email.com", "password")
+
+    def test_login_user_raises_on_invalid_password(self):
+        self.__user_manager.get_user_with_email.return_value = User(
+            email="test@email.com")
+        self.__password_handler.verify_password.return_value = False
+
+        authentication = self.__injector.get(Authentication)
+
+        with self.assertRaises(ValueError):
+            authentication.login_user("test@email.com", "password")
+
+    def test_login_user_returns_encoded_token(self):
+        test_email = "test@email.com"
+        password = "password"
+        encoded_token = "encoded-token"
+        self.__user_manager.get_user_with_email.return_value = User(
+            email=test_email)
+        self.__password_handler.verify_password.return_value = True
+        self.__jwt_encoder.encode.return_value = encoded_token
+
+        authentication = self.__injector.get(Authentication)
+        token = authentication.login_user(test_email, password)
+
+        self.assertEqual(token, encoded_token)
+        self.__jwt_encoder.encode.assert_called_once()
+
