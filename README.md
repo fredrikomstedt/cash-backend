@@ -1,7 +1,7 @@
 # user-service
 
-[![codecov](https://codecov.io/gh/Xaril/user-service/branch/main/graph/badge.svg?token=BNKIZX5CI7)](https://codecov.io/gh/fredrikomstedt/user-service)
-![Tests](https://github.com/xaril/user-service/actions/workflows/test.yaml/badge.svg)
+[![codecov](https://codecov.io/gh/fredrikomstedt/user-service/branch/main/graph/badge.svg?token=BNKIZX5CI7)](https://codecov.io/gh/fredrikomstedt/user-service)
+![Tests](https://github.com/fredrikomstedt/user-service/actions/workflows/test.yaml/badge.svg)
 
 This repository contains a [FastAPI](https://fastapi.tiangolo.com/) backend for creating and managing users. It uses [SQLModel](https://sqlmodel.tiangolo.com/) to handle database models and DTOs, and [injector](https://pypi.org/project/injector/) to more fully create a SOLID codebase.
 
