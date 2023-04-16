@@ -22,11 +22,14 @@ class TestApi(TestCase):
 
         self.__injector = Injector()
         self.__injector.binder.bind(
-            IAuthentication, to=self.__authentication, scope=singleton)
+            IAuthentication, to=self.__authentication, scope=singleton
+        )
         self.__injector.binder.bind(
-            IPasswordHandler, to=self.__password_handler, scope=singleton)
+            IPasswordHandler, to=self.__password_handler, scope=singleton
+        )
         self.__injector.binder.bind(
-            IUserManager, to=self.__user_manager, scope=singleton)
+            IUserManager, to=self.__user_manager, scope=singleton
+        )
 
         app = create_app(self.__injector)
         self.__client = TestClient(app)
@@ -35,7 +38,8 @@ class TestApi(TestCase):
         self.__authentication.login_user.side_effect = ValueError()
 
         response = self.__client.post(
-            "/auth/token", data={"username": "bla", "password": "bla"})
+            "/auth/token", data={"username": "bla", "password": "bla"}
+        )
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
@@ -46,10 +50,10 @@ class TestApi(TestCase):
         self.__authentication.login_user.return_value = token
 
         response = self.__client.post(
-            "/auth/token", data={"username": username, "password": password})
+            "/auth/token", data={"username": username, "password": password}
+        )
 
-        self.__authentication.login_user.assert_called_once_with(
-            username, password)
+        self.__authentication.login_user.assert_called_once_with(username, password)
         token_data = response.json()
         self.assertIn("token_type", token_data)
         self.assertEqual("bearer", token_data["token_type"])
@@ -60,7 +64,9 @@ class TestApi(TestCase):
         self.__user_manager.create_user.side_effect = ValueError()
 
         response = self.__client.post(
-            "/auth/create-user", json={"email": "fredrik@omstedt.com", "password": "password"})
+            "/auth/create-user",
+            json={"email": "fredrik@omstedt.com", "password": "password"},
+        )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_user_returns_user_read(self):
@@ -68,14 +74,15 @@ class TestApi(TestCase):
         first_name = "Fredrik"
         last_name = "Omstedt"
         self.__user_manager.create_user.return_value = User(
-            email=email, first_name=first_name, last_name=last_name)
+            email=email, first_name=first_name, last_name=last_name
+        )
 
         response = self.__client.post(
-            "/auth/create-user", json={"email": email, "password": "password"})
+            "/auth/create-user", json={"email": email, "password": "password"}
+        )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         user = response.json()
         self.assertNotIn("hashed_password", user)
-        self.assertNotIn("internal_id", user)
         self.assertEqual(first_name, user["first_name"])
         self.assertEqual(last_name, user["last_name"])
         self.assertEqual(email, user["email"])
@@ -90,15 +97,16 @@ class TestApi(TestCase):
         first_name = "Fredrik"
         last_name = "Omstedt"
         self.__authentication.authenticate_user.return_value = User(
-            email=email, first_name=first_name, last_name=last_name)
+            email=email, first_name=first_name, last_name=last_name
+        )
 
         response = self.__client.get(
-            "/auth/get-user", headers={"Authorization": "Bearer blabla"})
+            "/auth/get-user", headers={"Authorization": "Bearer blabla"}
+        )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         user = response.json()
         self.assertNotIn("hashed_password", user)
-        self.assertNotIn("internal_id", user)
         self.assertEqual(first_name, user["first_name"])
         self.assertEqual(last_name, user["last_name"])
         self.assertEqual(email, user["email"])
@@ -112,7 +120,8 @@ class TestApi(TestCase):
         self.__user_manager.update_user.side_effect = ObjectNotFoundError()
 
         response = self.__client.patch(
-            "/auth/update-user", json={}, headers={"Authorization": "Bearer blabla"})
+            "/auth/update-user", json={}, headers={"Authorization": "Bearer blabla"}
+        )
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
@@ -121,15 +130,16 @@ class TestApi(TestCase):
         first_name = "Fredrik"
         last_name = "Omstedt"
         self.__user_manager.update_user.return_value = User(
-            email=email, first_name=first_name, last_name=last_name)
+            email=email, first_name=first_name, last_name=last_name
+        )
 
         response = self.__client.patch(
-            "/auth/update-user", json={}, headers={"Authorization": "Bearer blabla"})
+            "/auth/update-user", json={}, headers={"Authorization": "Bearer blabla"}
+        )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         user = response.json()
         self.assertNotIn("hashed_password", user)
-        self.assertNotIn("internal_id", user)
         self.assertEqual(first_name, user["first_name"])
         self.assertEqual(last_name, user["last_name"])
         self.assertEqual(email, user["email"])
@@ -145,7 +155,7 @@ class TestApi(TestCase):
         response = self.__client.patch(
             "/auth/update-user-password",
             json={"old_password": "bla", "new_password": "blabla"},
-            headers={"Authorization": "Bearer blabla"}
+            headers={"Authorization": "Bearer blabla"},
         )
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -157,7 +167,7 @@ class TestApi(TestCase):
         response = self.__client.patch(
             "/auth/update-user-password",
             json={"old_password": "bla", "new_password": "blabla"},
-            headers={"Authorization": "Bearer blabla"}
+            headers={"Authorization": "Bearer blabla"},
         )
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
@@ -167,19 +177,19 @@ class TestApi(TestCase):
         first_name = "Fredrik"
         last_name = "Omstedt"
         self.__user_manager.update_user_password.return_value = User(
-            email=email, first_name=first_name, last_name=last_name)
+            email=email, first_name=first_name, last_name=last_name
+        )
 
         self.__password_handler.verify_password.return_value = True
         response = self.__client.patch(
             "/auth/update-user-password",
             json={"old_password": "bla", "new_password": "blabla"},
-            headers={"Authorization": "Bearer blabla"}
+            headers={"Authorization": "Bearer blabla"},
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         user = response.json()
         self.assertNotIn("hashed_password", user)
-        self.assertNotIn("internal_id", user)
         self.assertEqual(first_name, user["first_name"])
         self.assertEqual(last_name, user["last_name"])
         self.assertEqual(email, user["email"])
@@ -193,13 +203,15 @@ class TestApi(TestCase):
         self.__user_manager.delete_user.side_effect = ObjectNotFoundError()
 
         response = self.__client.delete(
-            "/auth/delete-user", headers={"Authorization": "Bearer blabla"})
+            "/auth/delete-user", headers={"Authorization": "Bearer blabla"}
+        )
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_delete_user_success(self):
         response = self.__client.delete(
-            "/auth/delete-user", headers={"Authorization": "Bearer blabla"})
+            "/auth/delete-user", headers={"Authorization": "Bearer blabla"}
+        )
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.__user_manager.delete_user.assert_called_once()

@@ -1,6 +1,6 @@
 from injector import inject
 from pydantic import EmailStr
-from sqlmodel import Session, select
+from sqlmodel import select
 
 from src.authentication.i_password_handler import IPasswordHandler
 from src.common.exceptions import ObjectNotFoundError
@@ -31,7 +31,7 @@ class UserManager(IUserManager):
 
     def get_user(self, id: str) -> User | None:
         with self.__database.get_session() as session:
-            user = self.__get_user_by_external_id(id, session)
+            user = session.get(User, id)
             return user
 
     def get_user_with_email(self, email: EmailStr) -> User | None:
@@ -43,7 +43,7 @@ class UserManager(IUserManager):
 
     def update_user(self, id: str, user: UserUpdate) -> User:
         with self.__database.get_session() as session:
-            db_user = self.__get_user_by_external_id(id, session)
+            db_user = session.get(User, id)
             if not db_user:
                 raise ObjectNotFoundError("No user with that ID exists.")
             user_data = user.dict(exclude_unset=True)
@@ -56,7 +56,7 @@ class UserManager(IUserManager):
 
     def update_user_password(self, id: str, password: str) -> User:
         with self.__database.get_session() as session:
-            db_user = self.__get_user_by_external_id(id, session)
+            db_user = session.get(User, id)
             if not db_user:
                 raise ObjectNotFoundError("No user with that ID exists.")
             hashed_password = self.__password_handler.hash_password(password)
@@ -68,15 +68,9 @@ class UserManager(IUserManager):
 
     def delete_user(self, id: str) -> None:
         with self.__database.get_session() as session:
-            db_user = self.__get_user_by_external_id(id, session)
+            db_user = session.get(User, id)
             if not db_user:
                 raise ObjectNotFoundError("No user with that ID exists.")
 
             session.delete(db_user)
             session.commit()
-
-    def __get_user_by_external_id(self, id: str, session: Session) -> User | None:
-        statement = select(User).where(User.id == id)
-        results = session.exec(statement)
-        user = results.first()
-        return user

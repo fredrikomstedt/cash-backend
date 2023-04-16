@@ -1,7 +1,7 @@
-from src.common.utils import str_uuid4
-
 from pydantic import EmailStr, Extra
 from sqlmodel import Field, SQLModel
+
+from src.common.utils import str_uuid4
 
 
 class UserBase(SQLModel):
@@ -29,10 +29,7 @@ class UserUpdatePassword(SQLModel):
 
 
 class User(UserBase, table=True):
-    internal_id: int | None = Field(default=None, primary_key=True)
     id: str = Field(
-        default_factory=str_uuid4,
-        index=True,
-        nullable=False,
+        default_factory=str_uuid4, index=True, nullable=False, primary_key=True
     )
     hashed_password: str | None = None
