@@ -1,8 +1,8 @@
-"""Initial migration
+"""initial migration
 
-Revision ID: 932364578e3e
+Revision ID: a708763afe5f
 Revises: 
-Create Date: 2022-12-12 16:22:26.557409
+Create Date: 2023-04-16 12:48:32.623776
 
 """
 from alembic import op
@@ -11,7 +11,7 @@ import sqlmodel
 
 
 # revision identifiers, used by Alembic.
-revision = '932364578e3e'
+revision = 'a708763afe5f'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -24,7 +24,7 @@ def upgrade() -> None:
     sa.Column('last_name', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
     sa.Column('email', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
     sa.Column('internal_id', sa.Integer(), nullable=False),
-    sa.Column('id', sqlmodel.sql.sqltypes.GUID(), nullable=False),
+    sa.Column('id', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
     sa.Column('hashed_password', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
     sa.PrimaryKeyConstraint('internal_id')
     )

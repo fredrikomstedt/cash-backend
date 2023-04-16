@@ -1,4 +1,4 @@
-import uuid
+from src.common.utils import str_uuid4
 
 from pydantic import EmailStr, Extra
 from sqlmodel import Field, SQLModel
@@ -11,7 +11,7 @@ class UserBase(SQLModel):
 
 
 class UserRead(UserBase):
-    id: uuid.UUID
+    id: str
 
 
 class UserCreate(UserBase, extra=Extra.forbid):
@@ -30,8 +30,8 @@ class UserUpdatePassword(SQLModel):
 
 class User(UserBase, table=True):
     internal_id: int | None = Field(default=None, primary_key=True)
-    id: uuid.UUID = Field(
-        default_factory=uuid.uuid4,
+    id: str = Field(
+        default_factory=str_uuid4,
         index=True,
         nullable=False,
     )

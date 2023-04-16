@@ -1,5 +1,3 @@
-from uuid import UUID
-
 from injector import inject
 from pydantic import EmailStr
 from sqlmodel import Session, select
@@ -31,7 +29,7 @@ class UserManager(IUserManager):
             session.refresh(db_user)
             return db_user
 
-    def get_user(self, id: UUID) -> User | None:
+    def get_user(self, id: str) -> User | None:
         with self.__database.get_session() as session:
             user = self.__get_user_by_external_id(id, session)
             return user
@@ -43,7 +41,7 @@ class UserManager(IUserManager):
             user = results.first()
             return user
 
-    def update_user(self, id: UUID, user: UserUpdate) -> User:
+    def update_user(self, id: str, user: UserUpdate) -> User:
         with self.__database.get_session() as session:
             db_user = self.__get_user_by_external_id(id, session)
             if not db_user:
@@ -56,7 +54,7 @@ class UserManager(IUserManager):
             session.refresh(db_user)
             return db_user
 
-    def update_user_password(self, id: UUID, password: str) -> User:
+    def update_user_password(self, id: str, password: str) -> User:
         with self.__database.get_session() as session:
             db_user = self.__get_user_by_external_id(id, session)
             if not db_user:
@@ -68,7 +66,7 @@ class UserManager(IUserManager):
             session.refresh(db_user)
             return db_user
 
-    def delete_user(self, id: UUID) -> None:
+    def delete_user(self, id: str) -> None:
         with self.__database.get_session() as session:
             db_user = self.__get_user_by_external_id(id, session)
             if not db_user:
@@ -77,7 +75,7 @@ class UserManager(IUserManager):
             session.delete(db_user)
             session.commit()
 
-    def __get_user_by_external_id(self, id: UUID, session: Session) -> User:
+    def __get_user_by_external_id(self, id: str, session: Session) -> User | None:
         statement = select(User).where(User.id == id)
         results = session.exec(statement)
         user = results.first()

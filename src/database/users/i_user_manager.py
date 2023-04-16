@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from uuid import UUID
 
 from pydantic import EmailStr
 
@@ -15,7 +14,7 @@ class IUserManager(ABC):
            Returns the newly created user."""
 
     @abstractmethod
-    def get_user(self, id: UUID) -> User | None:
+    def get_user(self, id: str) -> User | None:
         """Fetches a user with the given ID. Returns None
            if the user does not exist."""
 
@@ -25,16 +24,16 @@ class IUserManager(ABC):
            if the user does not exist."""
 
     @abstractmethod
-    def update_user(self, id: UUID, user: UserUpdate) -> User:
+    def update_user(self, id: str, user: UserUpdate) -> User:
         """Updates the user with the provided user values.
            Raises an exception if the user does not exist."""
 
     @abstractmethod
-    def update_user_password(self, id: UUID, password: str) -> User:
+    def update_user_password(self, id: str, password: str) -> User:
         """Updates the password of the user with the given ID.
            Raises an exception if the user does not exist."""
 
     @abstractmethod
-    def delete_user(self, id: UUID) -> None:
+    def delete_user(self, id: str) -> None:
         """Deletes the user with the given ID. Raises if the user
            does not exist."""
