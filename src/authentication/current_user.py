@@ -1,6 +1,7 @@
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from fastapi_injector import Injected
+from jose import ExpiredSignatureError
 
 from src.authentication.i_authentication import IAuthentication
 from src.common.exceptions import ObjectNotFoundError
@@ -19,3 +20,5 @@ def get_current_user(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User does not exist.",
         )
+    except ExpiredSignatureError:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)

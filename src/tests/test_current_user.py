@@ -2,6 +2,7 @@ from unittest import TestCase
 from unittest.mock import create_autospec
 
 from fastapi import HTTPException
+from jose import ExpiredSignatureError
 
 from src.authentication.current_user import get_current_user
 from src.authentication.i_authentication import IAuthentication
@@ -23,6 +24,12 @@ class TestCurrentUser(TestCase):
 
     def test_get_current_user_raises_bad_request(self):
         self.__authentication.authenticate_user.side_effect = ObjectNotFoundError()
+
+        with self.assertRaises(HTTPException):
+            get_current_user("Blabla", self.__authentication)
+
+    def test_get_current_user_raises_unauthorized(self):
+        self.__authentication.authenticate_user.side_effect = ExpiredSignatureError()
 
         with self.assertRaises(HTTPException):
             get_current_user("Blabla", self.__authentication)
