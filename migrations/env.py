@@ -5,6 +5,7 @@ from sqlalchemy import engine_from_config, pool
 from sqlmodel import SQLModel
 
 from src.common.settings import Settings
+from src.database.categories.category import Category
 from src.database.users.user import User
 
 # this is the Alembic Config object, which provides
@@ -29,9 +30,7 @@ target_metadata = SQLModel.metadata
 
 
 def db_url() -> str:
-    return config.get_main_option(
-        "sqlalchemy.url", default=Settings().database_url
-    )
+    return config.get_main_option("sqlalchemy.url", default=Settings().database_url)
 
 
 def run_migrations_offline() -> None:
@@ -76,7 +75,7 @@ def run_migrations_online() -> None:
         context.configure(
             connection=connection,
             target_metadata=target_metadata,
-            render_as_batch=True  # Allows for SQLite to be used
+            render_as_batch=True,  # Allows for SQLite to be used
         )
 
         with context.begin_transaction():

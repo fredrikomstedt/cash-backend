@@ -1,7 +1,12 @@
+from typing import TYPE_CHECKING
+
 from pydantic import EmailStr, Extra
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, Relationship, SQLModel
 
 from src.common.utils import str_uuid4
+
+if TYPE_CHECKING:
+    from src.database.categories.category import Category
 
 
 class UserBase(SQLModel):
@@ -33,3 +38,8 @@ class User(UserBase, table=True):
         default_factory=str_uuid4, index=True, nullable=False, primary_key=True
     )
     hashed_password: str | None = None
+
+    categories: list["Category"] = Relationship(
+        back_populates="user",
+        sa_relationship_kwargs={"lazy": "selectin", "cascade": "delete"},
+    )
