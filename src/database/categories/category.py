@@ -19,10 +19,6 @@ class CategoryCreate(CategoryBase, extra=Extra.forbid):
     pass
 
 
-class CategoryUpdate(CategoryBase, extra=Extra.forbid):
-    pass
-
-
 class Category(CategoryBase, table=True):
     name: str = Field(primary_key=True)
 
