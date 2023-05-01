@@ -7,22 +7,28 @@ from src.authentication.i_authentication import IAuthentication
 from src.authentication.i_password_handler import IPasswordHandler
 from src.authentication.token import Token
 from src.common.exceptions import ObjectNotFoundError
-from src.database.users.i_user_manager import IUserManager
-from src.database.users.user import (User, UserCreate, UserRead, UserUpdate,
-                                     UserUpdatePassword)
+from src.database.users.user import (
+    User,
+    UserCreate,
+    UserRead,
+    UserUpdate,
+    UserUpdatePassword,
+)
+from src.managers.i_user_manager import IUserManager
 
-router = APIRouter(prefix="/auth",
-                   tags=["Authentication"],)
+router = APIRouter(
+    prefix="/auth",
+    tags=["Authentication"],
+)
 
 
 @router.post("/token", response_model=Token)
 def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(),
-    authentication: IAuthentication = Injected(IAuthentication)
+    authentication: IAuthentication = Injected(IAuthentication),
 ):
     try:
-        token = authentication.login_user(
-            form_data.username, form_data.password)
+        token = authentication.login_user(form_data.username, form_data.password)
         return {"access_token": token, "token_type": "bearer"}
     except ValueError as exc:
         raise HTTPException(
@@ -40,7 +46,7 @@ def login_for_access_token(
         status.HTTP_400_BAD_REQUEST: {
             "description": "User with that email already exists."
         }
-    }
+    },
 )
 def create_user(user: UserCreate, user_manager: IUserManager = Injected(IUserManager)):
     try:
@@ -56,16 +62,12 @@ def create_user(user: UserCreate, user_manager: IUserManager = Injected(IUserMan
 @router.patch(
     "/update-user",
     response_model=UserRead,
-    responses={
-        status.HTTP_404_NOT_FOUND: {
-            "description": "User does not exist."
-        }
-    }
+    responses={status.HTTP_404_NOT_FOUND: {"description": "User does not exist."}},
 )
 def update_user(
     user: UserUpdate,
     user_manager: IUserManager = Injected(IUserManager),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user),
 ):
     try:
         updated_user = user_manager.update_user(current_user.id, user)
@@ -81,28 +83,27 @@ def update_user(
     "/update-user-password",
     response_model=UserRead,
     responses={
-        status.HTTP_400_BAD_REQUEST: {
-            "description": "Old password is incorrect."
-        },
-        status.HTTP_404_NOT_FOUND: {
-            "description": "User does not exist."
-        }
-    }
+        status.HTTP_400_BAD_REQUEST: {"description": "Old password is incorrect."},
+        status.HTTP_404_NOT_FOUND: {"description": "User does not exist."},
+    },
 )
 def update_user_password(
     passwords: UserUpdatePassword,
     password_handler: IPasswordHandler = Injected(IPasswordHandler),
     user_manager: IUserManager = Injected(IUserManager),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user),
 ):
-    if not password_handler.verify_password(passwords.old_password, current_user.hashed_password):
+    if not password_handler.verify_password(
+        passwords.old_password, current_user.hashed_password
+    ):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Old password is incorrect.",
         )
     try:
         updated_user = user_manager.update_user_password(
-            current_user.id, passwords.new_password)
+            current_user.id, passwords.new_password
+        )
         return updated_user
     except ObjectNotFoundError as exc:
         raise HTTPException(
@@ -115,30 +116,20 @@ def update_user_password(
     "/get-user",
     status_code=status.HTTP_200_OK,
     response_model=UserRead,
-    responses={
-        status.HTTP_404_NOT_FOUND: {
-            "description": "User does not exist."
-        }
-    }
+    responses={status.HTTP_404_NOT_FOUND: {"description": "User does not exist."}},
 )
-def get_user(
-    current_user: User = Depends(get_current_user)
-):
+def get_user(current_user: User = Depends(get_current_user)):
     return current_user
 
 
 @router.delete(
     "/delete-user",
     status_code=status.HTTP_204_NO_CONTENT,
-    responses={
-        status.HTTP_404_NOT_FOUND: {
-            "description": "User does not exist."
-        }
-    }
+    responses={status.HTTP_404_NOT_FOUND: {"description": "User does not exist."}},
 )
 def delete_user(
     user_manager: IUserManager = Injected(IUserManager),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user),
 ):
     try:
         user_manager.delete_user(current_user.id)

@@ -9,7 +9,7 @@ from src.common.exceptions import ObjectNotFoundError
 from src.database.i_database import IDatabase
 from src.database.i_database_deleter import IDatabaseDeleter
 from src.database.users.user import User, UserCreate, UserUpdate
-from src.database.users.user_manager import UserManager
+from src.managers.user_manager import UserManager
 from src.tests.test_utils import create_injector_with_database
 
 
@@ -18,7 +18,8 @@ class TestUserManager(TestCase):
         self.__password_handler = create_autospec(IPasswordHandler)
         self.__injector = create_injector_with_database()
         self.__injector.binder.bind(
-            IPasswordHandler, to=self.__password_handler, scope=singleton)
+            IPasswordHandler, to=self.__password_handler, scope=singleton
+        )
 
         database = self.__injector.get(IDatabase)
         database.create_database()
@@ -144,8 +145,7 @@ class TestUserManager(TestCase):
         new_password = "password"
         manager.update_user_password(user_id, new_password)
 
-        self.__password_handler.hash_password.assert_called_once_with(
-            new_password)
+        self.__password_handler.hash_password.assert_called_once_with(new_password)
         with database.get_session() as session:
             statement = select(User).where(User.id == user_id)
             results = session.exec(statement)

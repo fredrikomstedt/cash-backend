@@ -9,8 +9,8 @@ from src.authentication.i_password_handler import IPasswordHandler
 from src.common.exceptions import ObjectNotFoundError
 from src.common.i_jwt_encoder import IJwtEncoder
 from src.common.settings import Settings
-from src.database.users.i_user_manager import IUserManager
 from src.database.users.user import User
+from src.managers.i_user_manager import IUserManager
 
 
 class Authentication(IAuthentication):
@@ -20,7 +20,7 @@ class Authentication(IAuthentication):
         password_handler: IPasswordHandler,
         jwt_encoder: IJwtEncoder,
         user_manager: IUserManager,
-        settings: Settings
+        settings: Settings,
     ):
         self.__password_handler = password_handler
         self.__jwt_encoder = jwt_encoder

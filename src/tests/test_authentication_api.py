@@ -8,9 +8,9 @@ from injector import Injector, singleton
 from src.authentication.i_authentication import IAuthentication
 from src.authentication.i_password_handler import IPasswordHandler
 from src.common.exceptions import ObjectNotFoundError
-from src.database.users.i_user_manager import IUserManager
 from src.database.users.user import User
 from src.main import create_app
+from src.managers.i_user_manager import IUserManager
 
 
 class TestApi(TestCase):
