@@ -42,6 +42,26 @@ class TestCategoryDatabaseHandler(TestCase):
             with database.get_session() as session:
                 handler.create_category(session, self.__user, name)
 
+    def test_create_category_does_not_raise_if_different_user(self):
+        name = "Car"
+        second_user = User(email="fredrik2@omstedt.com")
+        database = self.__injector.get(IDatabase)
+        with database.get_session() as session:
+            session.add(second_user)
+            session.commit()
+            session.refresh(second_user)
+
+        handler = self.__injector.get(CategoryDatabaseHandler)
+        with database.get_session() as session:
+            handler.create_category(session, self.__user, name)
+            handler.create_category(session, second_user, name)
+            session.commit()
+
+        with database.get_session() as session:
+            statement = select(Category).where(Category.name == name)
+            db_categories = session.exec(statement).all()
+            self.assertEqual(len(db_categories), 2)
+
     def test_create_category_creates_category(self):
         name = "Car"
         database = self.__injector.get(IDatabase)
@@ -52,7 +72,7 @@ class TestCategoryDatabaseHandler(TestCase):
             session.refresh(category)
 
         with database.get_session() as session:
-            db_category = session.get(Category, name)
+            db_category = session.get(Category, (name, self.__user.id))
             self.assertEqual(db_category.name, category.name)
             self.assertEqual(db_category.user, category.user)
 

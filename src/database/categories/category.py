@@ -22,7 +22,7 @@ class CategoryCreate(CategoryBase, extra=Extra.forbid):
 class Category(CategoryBase, table=True):
     name: str = Field(primary_key=True)
 
-    user_id: str = Field(foreign_key="user.id")
+    user_id: str = Field(primary_key=True, foreign_key="user.id")
     user: "User" = Relationship(
         back_populates="categories", sa_relationship_kwargs={"lazy": "joined"}
     )
